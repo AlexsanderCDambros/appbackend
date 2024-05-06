@@ -1,5 +1,6 @@
 package com.alcd.appbackend.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ public class UsuarioService {
 	
 	@Autowired
 	private UsuarioRepository repo;
+	
+	public List<Usuario> findAll() {
+		List<Usuario> list = repo.findAll();
+		return list;
+	}
 	
 	public Usuario findById(Integer id) {
 		Optional<Usuario> obj = repo.findById(id);
