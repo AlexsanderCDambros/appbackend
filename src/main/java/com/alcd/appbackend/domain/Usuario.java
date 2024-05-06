@@ -17,12 +17,16 @@ public class Usuario implements Serializable {
 	private Integer id;
 	private String login;
 	private String role;
-	
+
 	public Usuario(Integer id, String login, String role) {
 		super();
 		this.id = id;
 		this.login = login;
 		this.role = role;
+	}
+	
+	public Usuario() {
+		
 	}
 
 	public Integer getId() {
