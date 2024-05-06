@@ -24,4 +24,9 @@ public class UsuarioService {
 		return repo.save(obj);
 	}
 	
+	public Usuario update(Usuario obj) {
+		findById(obj.getId());
+		return repo.save(obj);
+	}
+	
 }
