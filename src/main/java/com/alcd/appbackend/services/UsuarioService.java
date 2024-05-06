@@ -19,4 +19,9 @@ public class UsuarioService {
 		return obj.orElse(null);
 	}
 	
+	public Usuario insert(Usuario obj) {
+		obj.setId(null);
+		return repo.save(obj);
+	}
+	
 }
