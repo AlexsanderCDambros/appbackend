@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.alcd.appbackend.domain.Usuario;
 import com.alcd.appbackend.repositories.UsuarioRepository;
+import com.alcd.appbackend.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UsuarioService {
@@ -16,7 +17,8 @@ public class UsuarioService {
 	
 	public Usuario findById(Integer id) {
 		Optional<Usuario> obj = repo.findById(id);
-		return obj.orElse(null);
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				 "Objeto não encontrado! Id: " + id + ", Tipo: " + Usuario.class.getName()));
 	}
 	
 	public Usuario insert(Usuario obj) {
@@ -29,4 +31,8 @@ public class UsuarioService {
 		return repo.save(obj);
 	}
 	
+	public void delete(Integer id) {
+		findById(id);
+		repo.deleteById(id);
+	}
 }
