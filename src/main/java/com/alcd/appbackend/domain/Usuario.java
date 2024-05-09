@@ -1,9 +1,18 @@
 package com.alcd.appbackend.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.alcd.appbackend.domain.enums.Perfil;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,18 +24,23 @@ public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@Column(unique=true)
 	private String login;
-	private String role;
+	private String password;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name="Perfis")
+	private Set<Integer> perfis = new HashSet<>();
 
-	public Usuario(Integer id, String login, String role) {
+	public Usuario(Integer id, String login, String password) {
 		super();
 		this.id = id;
 		this.login = login;
-		this.role = role;
+		this.password = password;
 	}
 	
 	public Usuario() {
-		
 	}
 
 	public Integer getId() {
@@ -45,12 +59,20 @@ public class Usuario implements Serializable {
 		this.login = login;
 	}
 
-	public String getRole() {
-		return role;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
+	
+	public void addPerfis(Perfil perfil) {
+		perfis.add(perfil.getCod());
 	}
 
 	@Override
