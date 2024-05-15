@@ -1,7 +1,6 @@
 package com.alcd.appbackend.dto;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import com.alcd.appbackend.domain.Usuario;
 import com.alcd.appbackend.domain.enums.Perfil;
@@ -10,14 +9,14 @@ public class GetUsuarioDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String login;
-	private Set<Perfil> perfis;
+	private Perfil perfil;
 	
 	public GetUsuarioDTO() {
 	}
 	
 	public GetUsuarioDTO(Usuario usuario) {
 		login = usuario.getLogin();
-		perfis = usuario.getPerfis();
+		perfil = usuario.getPerfil();
 	}
 	
 	public String getLogin() {
@@ -28,12 +27,12 @@ public class GetUsuarioDTO implements Serializable {
 		this.login = login;
 	}
 
-	public Set<Perfil> getPerfis() {
-		return perfis;
+	public Perfil getPerfis() {
+		return perfil;
 	}
 
-	public void setPerfis(Set<Perfil> perfis) {
-		this.perfis = perfis;
+	public void setPerfis(Perfil perfis) {
+		this.perfil = perfis;
 	}
 
 	

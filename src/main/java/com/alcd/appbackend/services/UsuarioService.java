@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alcd.appbackend.domain.Usuario;
-import com.alcd.appbackend.domain.enums.Perfil;
 import com.alcd.appbackend.dto.PostUsuarioDTO;
 import com.alcd.appbackend.repositories.UsuarioRepository;
 import com.alcd.appbackend.services.exceptions.ObjectNotFoundException;
@@ -35,13 +34,9 @@ public class UsuarioService {
 	}
 	
 	public Usuario insert(PostUsuarioDTO obj) {
-		Usuario usuario = new Usuario(null, obj.getLogin(), pe.encode(obj.getPassword()));
+		Usuario usuario = new Usuario(null, obj.getLogin(), pe.encode(obj.getPassword()), obj.getPerfil());
 		
-		obj.getPerfis().forEach(perfil -> {
-			usuario.addPerfis(Perfil.valueOf(perfil));
-		});
-		
-		try {			
+		try {
 			return repo.save(usuario);
 		}
 		catch (Exception ex) {

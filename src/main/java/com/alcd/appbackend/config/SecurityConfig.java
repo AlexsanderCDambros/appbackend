@@ -1,16 +1,19 @@
 package com.alcd.appbackend.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 	
 	private static final String[] PUBLIC_MATCHERS = {
@@ -19,13 +22,19 @@ public class SecurityConfig {
 	};
 	
 	@Bean
-    SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		
         http
         	.cors(cors -> cors.disable())
         	.csrf((csrf) -> csrf.disable())
+        	.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasRole("ADMIN")
             	.anyRequest().authenticated()
             )
             .headers(headers -> headers
@@ -33,13 +42,24 @@ public class SecurityConfig {
                     .sameOrigin()
                 )
             )
-            .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .httpBasic(withDefaults());
+//            .httpBasic(withDefaults())
+            ;
         return http.build();
     }
 
+//	@Bean
+//	BCryptPasswordEncoder bCryptPasswordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
+
 	@Bean
-	BCryptPasswordEncoder bCryptPasswordEncoder() {
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-}
+	
+} 

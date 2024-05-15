@@ -2,16 +2,14 @@ package com.alcd.appbackend.dto;
 
 import java.io.Serializable;
 
-import com.alcd.appbackend.domain.enums.Perfil;
-
-public class PostUsuarioDTO implements Serializable {
+public class LoginDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	private String login;
 	private String password;
-	private Perfil perfil;
-	
-	public PostUsuarioDTO() {
+
+	public LoginDTO() {
+		
 	}
 
 	public String getLogin() {
@@ -29,13 +27,6 @@ public class PostUsuarioDTO implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public Perfil getPerfil() {
-		return perfil;
-	}
-
-	public void setPerfis(Perfil perfil) {
-		this.perfil = perfil;
-	}
+	
 	
 }
