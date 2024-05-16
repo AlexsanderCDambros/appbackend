@@ -1,5 +1,6 @@
 package com.alcd.appbackend.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
+	@Autowired
+	SecurityFilter securityFilter;
 	
 	private static final String[] PUBLIC_MATCHERS = {
 			"/health/**",
@@ -33,8 +38,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/usuarios/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasAuthority("ADMIN")
             	.anyRequest().authenticated()
             )
             .headers(headers -> headers
@@ -42,15 +46,10 @@ public class SecurityConfig {
                     .sameOrigin()
                 )
             )
-//            .httpBasic(withDefaults())
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
             ;
         return http.build();
     }
-
-//	@Bean
-//	BCryptPasswordEncoder bCryptPasswordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
 
 	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
